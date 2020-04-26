@@ -1,4 +1,4 @@
-# course-youtube
+# GitHub + VueJS
 
 ## Project setup
 ```
@@ -10,15 +10,7 @@ yarn install
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+### Gifs
 
-### Lints and fixes files
-```
-yarn lint
-```
+![captured](https://user-images.githubusercontent.com/52014318/80315913-12b52f00-87d1-11ea-8c8c-ecb87f45e2a3.gif)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
