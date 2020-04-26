@@ -21,26 +21,62 @@
 
       <div class="area-buttons">
         <button @click.prevent.stop="loadIssues()" type="submit">
-          GO
+          <span v-if="!loading">
+            GO
+          </span>
+          <FacebookLoader
+            :loading="loading"
+            :color="'#fff'"
+            size="30"
+          />
         </button>
+
         <button @click.prevent.stop="reset()" type="buttom">
           LIMPAR
         </button>
       </div>
     </form>
+
+    <div class="list-issues">
+      <table>
+        <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Titulo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="issue in issues" :key="issue.number">
+            <td>{{ issue.number }}</td>
+            <td>{{ issue.title }}</td>
+          </tr>
+          <tr v-if="!!!issues.length">
+            <td colspan="2">
+              Nenhuma issue
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 import api from "../../services/api";
+import { FacebookLoader } from "vue-spinners-css";
 export default {
   name: "Home",
+
+  components: {
+    FacebookLoader,
+  },
 
   data() {
     return {
       msg: "ola mundo",
       username: "",
       repository: "",
+      loading: false,
       issues: [],
     };
   },
@@ -52,13 +88,15 @@ export default {
     },
 
     loadIssues() {
+      this.loading = true;
       api
         .get(`/repos/${this.username}/${this.repository}/issues`)
         .then((res) => {
           this.issues = res.data;
-          console.log(res.data);
+          this.loading = false;
         })
         .catch((error) => {
+          this.loading = false;
           if (error.response.status === 404) {
             return this.$vToastify.error("Nada encontrado");
           }
@@ -131,6 +169,7 @@ export default {
   border-radius: 8px;
   transition: background 0.5s, box-shadow 0.5s;
 }
+
 .area-buttons button[type="submit"]:hover {
   background: #45bf49;
   -webkit-box-shadow: -10px 10px 5px 0px rgba(224, 208, 224, 0.54);
@@ -150,5 +189,18 @@ export default {
   -webkit-box-shadow: -10px 10px 5px 0px rgba(224, 208, 224, 0.54);
   -moz-box-shadow: -10px 10px 5px 0px rgba(224, 208, 224, 0.54);
   box-shadow: -10px 10px 5px 0px rgba(224, 208, 224, 0.54);
+}
+
+.list-issues {
+  display: none;
+  margin-top: 100px;
+  padding: 10px 20px;
+  width: 100%;
+
+  -webkit-box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
+  -moz-box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
+  box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
+
+  border-radius: 30px;
 }
 </style>
