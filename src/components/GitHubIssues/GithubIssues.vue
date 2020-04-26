@@ -3,30 +3,70 @@
     <h1>Vue.JS + Github</h1>
 
     <p>
-      Página que lista issues de um repositório do Github, usando apenas Vue
+      Página que lista issues de um repositório do Github, usando
+      apenas Vue
     </p>
 
     <form>
-      <input type="text" name="username" placeholder="github username" />
-      <input type="text" name="repository" placeholder="github repositório" />
+      <input
+        type="text"
+        v-model="username"
+        placeholder="github username"
+      />
+      <input
+        type="text"
+        v-model="repository"
+        placeholder="github repositório"
+      />
 
       <div class="area-buttons">
-        <button type="submit">GO</button>
-        <button type="buttom">LIMPAR</button>
+        <button @click.prevent.stop="loadIssues()" type="submit">
+          GO
+        </button>
+        <button @click.prevent.stop="reset()" type="buttom">
+          LIMPAR
+        </button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import api from "../../services/api";
 export default {
   name: "Home",
 
   data() {
     return {
       msg: "ola mundo",
+      username: "",
+      repository: "",
+      issues: [],
     };
   },
+
+  methods: {
+    reset() {
+      this.username = "";
+      this.repository = "";
+    },
+
+    loadIssues() {
+      api
+        .get(`/repos/${this.username}/${this.repository}/issues`)
+        .then((res) => {
+          this.issues = res.data;
+          console.log(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 404) {
+            return this.$vToastify.error("Nada encontrado");
+          }
+          return this.$vToastify.error("Falha na requisição");
+        });
+    },
+  },
+  created() {},
 };
 </script>
 
@@ -60,7 +100,19 @@ export default {
   border-radius: 8px;
   border: 0;
   border: 3px solid #ddd;
+  transition: border 0.3s, box-shadow 0.3s;
 }
+.App form input:focus {
+  border: 4px solid #777;
+  -webkit-box-shadow: -1px 2px 5px 3px rgba(209, 209, 209, 1);
+  -moz-box-shadow: -1px 2px 5px 3px rgba(209, 209, 209, 1);
+  box-shadow: -1px 2px 5px 3px rgba(209, 209, 209, 1);
+}
+.App form input::placeholder {
+  color: #999;
+  opacity: 0.5;
+}
+
 .App form .area-buttons {
   width: 100%;
   display: flex;
