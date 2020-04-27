@@ -37,7 +37,11 @@
       </div>
     </form>
 
-    <div class="list-issues">
+    <div
+      id="list-session"
+      class="list-issues "
+      v-if="issues.length > 0"
+    >
       <table>
         <thead>
           <tr>
@@ -98,9 +102,12 @@ export default {
         .catch((error) => {
           this.loading = false;
           if (error.response.status === 404) {
-            return this.$vToastify.error("Nada encontrado");
+            return this.$vToastify.error("Nada encontrado", "Falha");
           }
-          return this.$vToastify.error("Falha na requisição");
+          return this.$vToastify.error(
+            "verifique sua internet",
+            "Falha na requisição",
+          );
         });
     },
   },
@@ -115,6 +122,7 @@ export default {
   flex-direction: column;
   align-items: center;
   margin-top: 70px;
+  overflow: hidden;
 }
 
 .App h1 {
@@ -192,7 +200,6 @@ export default {
 }
 
 .list-issues {
-  display: none;
   margin-top: 100px;
   padding: 10px 20px;
   width: 100%;
@@ -202,5 +209,47 @@ export default {
   box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
 
   border-radius: 30px;
+
+  animation-name: slide-in-blurred-bottom;
+  animation-duration: 0.5s;
+}
+
+.list-issues th {
+  text-align: left;
+  padding-right: 40px;
+  padding-bottom: 20px;
+}
+
+.list-issues td {
+  padding-bottom: 10px;
+  color: #111;
+}
+.list-issues td + td {
+  color: #666;
+}
+
+/**
+animations
+ */
+@keyframes slide-in-blurred-bottom {
+  0% {
+    -webkit-transform: translateY(1000px) scaleY(2.5) scaleX(0.2);
+    transform: translateY(1000px) scaleY(2.5) scaleX(0.2);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    -webkit-filter: blur(40px);
+    filter: blur(40px);
+    opacity: 0;
+    overflow: hidden;
+  }
+  100% {
+    -webkit-transform: translateY(0) scaleY(1) scaleX(1);
+    transform: translateY(0) scaleY(1) scaleX(1);
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    opacity: 1;
+  }
 }
 </style>

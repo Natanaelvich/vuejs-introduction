@@ -17,3 +17,13 @@ body,input,button{
 button{
     cursor: pointer; 
 }
+
+body::-webkit-scrollbar {
+    width: 0.45rem;
+  }
+  body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  body::-webkit-scrollbar-thumb {
+    background: #45BF49;
+  }

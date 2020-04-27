@@ -9,6 +9,9 @@ Vue.config.productionTip = false;
 Vue.use(VueToastify, {
   successDuration: 2000,
   errorDuration: 3000,
+  theme: "light",
+  iconEnabled: false,
+  maxToasts: 3,
 });
 
 Vue.use(VueSpinnersCss);
