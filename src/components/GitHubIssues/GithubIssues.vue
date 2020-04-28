@@ -27,7 +27,7 @@
           <FacebookLoader
             :loading="loading"
             :color="'#fff'"
-            size="30"
+            :size="30"
           />
         </button>
 
@@ -37,11 +37,7 @@
       </div>
     </form>
 
-    <div
-      id="list-session"
-      class="list-issues "
-      v-if="issues.length > 0"
-    >
+    <div class="list-issues " v-if="issues.length > 0 && visible">
       <table>
         <thead>
           <tr>
@@ -51,7 +47,14 @@
         </thead>
         <tbody>
           <tr v-for="issue in issues" :key="issue.number">
-            <td>{{ issue.number }}</td>
+            <td>
+              <a
+                @click.prevent.stop="loadIssue(issue.number)"
+                href=""
+              >
+                {{ issue.number }}
+              </a>
+            </td>
             <td>{{ issue.title }}</td>
           </tr>
           <tr v-if="!!!issues.length">
@@ -61,6 +64,25 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div v-if="!visible" class="detail">
+      <button @click="back()">
+        <md-icon>thumb_up</md-icon>
+        voltar
+      </button>
+      <img
+        :src="`${issue.user.avatar_url}`"
+        alt=""
+        width="100"
+        height="100"
+      />
+
+      <h1>
+        {{ issue.user.login }}
+      </h1>
+      <p>
+        {{ issue.body }}
+      </p>
     </div>
   </div>
 </template>
@@ -82,6 +104,10 @@ export default {
       repository: "",
       loading: false,
       issues: [],
+      issue: null,
+      visible: {
+        list: true,
+      },
     };
   },
 
@@ -94,7 +120,8 @@ export default {
     loadIssues() {
       this.loading = true;
       api
-        .get(`/repos/${this.username}/${this.repository}/issues`)
+        // .get(`/repos/${this.username}/${this.repository}/issues`)
+        .get(`/repos/rocketseat/unform/issues`)
         .then((res) => {
           this.issues = res.data;
           this.loading = false;
@@ -109,6 +136,35 @@ export default {
             "Falha na requisição",
           );
         });
+    },
+
+    loadIssue(id) {
+      api
+        .get(
+          // `/repos/${this.username}/${this.repository}/issues/${id}`,
+          `/repos/rocketseat/unform/issues/${id}`,
+        )
+        .then((res) => {
+          this.visible = false;
+          this.issue = res.data;
+        })
+        .catch((error) => {
+          this.loading = false;
+          if (error.response.status === 404) {
+            return this.$vToastify.error(
+              "erro ao abrir issue",
+              "Falha",
+            );
+          }
+          return this.$vToastify.error(
+            "verifique sua internet",
+            "Falha na requisição",
+          );
+        });
+    },
+
+    back() {
+      this.visible = true;
     },
   },
   created() {},
@@ -125,7 +181,7 @@ export default {
   overflow: hidden;
 }
 
-.App h1 {
+.App h1:first {
   margin-bottom: 90px;
 }
 
@@ -226,6 +282,36 @@ export default {
 }
 .list-issues td + td {
   color: #666;
+}
+
+.detail {
+  animation-name: slide-in-blurred-bottom;
+  animation-duration: 0.5s;
+
+  -webkit-box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
+  -moz-box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
+  box-shadow: 0px -7px 5px 3px rgba(209, 209, 209, 1);
+
+  margin-top: 20px;
+
+  padding-left: 20px;
+  padding-top: 20px;
+}
+
+.detail h1 {
+  color: #444;
+}
+
+.detail p {
+  color: #555;
+  margin-top: 10px;
+}
+.detail button {
+  display: block;
+  margin-bottom: 10px;
+
+  border: 0;
+  background: transparent;
 }
 
 /**
