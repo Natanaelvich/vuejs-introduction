@@ -66,10 +66,15 @@
       </table>
     </div>
     <div v-if="!visible" class="detail">
-      <button @click="back()">
-        <md-icon>thumb_up</md-icon>
-        voltar
-      </button>
+      <div class="header-detail">
+        <button @click="back()">
+          <font-awesome-icon
+            icon="arrow-left"
+            :style="{ color: '#48e87b' }"
+            size="lg"
+          />
+        </button>
+      </div>
       <img
         :src="`${issue.user.avatar_url}`"
         alt=""
@@ -285,6 +290,7 @@ export default {
 }
 
 .detail {
+  width: 100%;
   animation-name: slide-in-blurred-bottom;
   animation-duration: 0.5s;
 
@@ -305,13 +311,27 @@ export default {
 .detail p {
   color: #555;
   margin-top: 10px;
+  padding-bottom: 40px;
 }
-.detail button {
-  display: block;
-  margin-bottom: 10px;
-
+.detail img {
+  border: 3px solid #555;
+  border-radius: 20px;
+}
+.header-detail button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   border: 0;
   background: transparent;
+  transition: background 0.5s;
+}
+.header-detail button:hover {
+  background: #d9ffd2;
+}
+.header-detail {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
 }
 
 /**
